@@ -14,6 +14,67 @@
 - 报纸风格 HTML 邮件：masthead 报头 + 衬线排版 + NumberAlign 数字字体
 - 全 PowerShell/Node 零第三方依赖
 
+## 📦 安装方法
+
+### 方式一：直接把链接丢给 AI Agent（小白最推荐 🌟）
+
+**什么都不用自己操作**，只需把下面这段话复制给你的 AI 助手（Codex / Claude / WorkBuddy 等），让它自己去下载、安装、配置，再教你怎么用：
+
+> 请帮我把这个 GitHub 仓库的资讯简报项目配置好：
+> 仓库：https://github.com/fang-123559/daily-news-brief
+> 请先下载（git clone 或下载 ZIP），放到我的本地工作目录，
+> 再帮我：1) 按 `config\smtp.env.example` 创建 `config\smtp.env` 并配置邮件；
+> 2) 运行 scripts 下的抓取脚本，验证天气 / 金银 / 快讯数据源可用；
+> 3) 告诉我怎么用它。
+
+也可以直接让 Agent 执行下面的命令完成下载：
+
+```bash
+git clone https://github.com/fang-123559/daily-news-brief.git
+```
+
+### 方式二：手动下载（推荐新手）
+
+1. 点击右上角 **Code → Download ZIP** 下载并解压
+2. 确认本机满足下方「前置要求」（Windows PowerShell + Node.js）
+3. 复制 `config\smtp.env.example` 为 `config\smtp.env`，填入你的 163 邮箱授权码
+4. 依次运行 `scripts\` 下的脚本，验证天气 / 金银 / 快讯数据能正常抓取
+
+### 方式三：Git 克隆
+
+```bash
+git clone https://github.com/fang-123559/daily-news-brief.git
+cd daily-news-brief
+```
+
+## 🚀 使用方式
+
+### 方式一：对话中直接触发
+
+配置完成后，在 AI 对话中直接说：
+
+> "帮我生成今天的一份每日资讯简报"
+
+AI 会按 README 流程抓取 5 个板块数据、核验时效、多源合并、生成日报，展示审阅版后等待你确认，再发送邮件。
+
+### 方式二：接入自动化定时推送（推荐）
+
+在 Codex / Claude / WorkBuddy 等平台创建一个每日定时任务（如每天 08:30），prompt 可参考：
+
+```text
+每天生成一份每日资讯简报，严格按 README 的执行流程：
+抓取天气/AI/国内/金融/国际数据 → 时效硬核验 → 多源合并 → 生成日报 Markdown → 展示审阅版 → 用户确认后调用 send_email.ps1 发送 HTML 邮件
+```
+
+首次使用请先把 `config\smtp.env.example` 复制为 `config\smtp.env` 并填写真实授权码。
+
+## 前置要求
+
+- Windows + PowerShell 5.1+（脚本为 `.ps1`）
+- Node.js 18+（运行 `verify_news.js`）
+- 一个 163 邮箱的 SMTP 授权码（smtp.163.com:465 SSL）
+- 网络可访问天气 / 行情 / 新闻数据源（受限网络下可配置本地代理）
+
 ## 目录结构
 
 ```text
@@ -35,7 +96,7 @@ daily-news-brief/
     └── 2026-08-19.md         # 示例日报
 ```
 
-## 快速开始
+## 配置与运行
 
 ### 1. 配置 SMTP
 
