@@ -1,0 +1,18 @@
+# 敏感配置（禁止提交真实授权码）
+config/smtp.env
+.env
+smtp.env
+
+# 运行时产物
+archives/*.md
+!archives/2026-08-18.md
+!archives/2026-08-19.md
+archives/*.html
+archives/subject.txt
+outputs/
+
+# 系统文件
+Thumbs.db
+.DS_Store
+*.tmp
+*.log

@@ -1,0 +1,16 @@
+{
+  "_comment": "sub agent 统一候选输出模板。published_raw 为从原文提取的发布元数据原文，必须提供；url/sources.url 必须可访问（200）。主 agent 用 node scripts/verify_news.js 核验后才可进入日报。",
+  "items": [
+    {
+      "section": "AI",
+      "title": "示例：某公司完成融资",
+      "summary": "概况一句话",
+      "impact": "影响一句话",
+      "url": "https://example.com/article",
+      "sources": [
+        { "media": "Reuters", "url": "https://example.com/reuters", "date": "2026-08-17" }
+      ],
+      "published_raw": "2026-08-17T13:10:05+00:00"
+    }
+  ]
+}
