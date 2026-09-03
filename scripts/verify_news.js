@@ -23,14 +23,48 @@
 
 const net = require('net');
 const tls = require('tls');
+const https = require('https');
 const fs = require('fs');
 const path = require('path');
 
+// 抓取通道: 默认直连。仅在受限网络需要代理时,设置 PROXY_HOST(和可选 PROXY_PORT,默认 1080)。
+const USE_PROXY = !!(process.env.PROXY_HOST || process.env.PROXY_PORT);
 const PROXY = { host: process.env.PROXY_HOST || '127.0.0.1', port: Number(process.env.PROXY_PORT || 1080) };
 const UA =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36';
 
+// 默认通道: 直连(不走代理)。返回 {status, html, location}
+function directGet(url, headers, timeoutMs = 30000) {
+  return new Promise((resolve, reject) => {
+    let u;
+    try { u = new URL(url); } catch (e) { return reject(new Error('bad url')); }
+    if (u.protocol !== 'https:') return reject(new Error('only https: ' + url));
+    const req = https.request(u, {
+      method: 'GET',
+      headers: Object.assign({
+        'User-Agent': UA,
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.9,zh-CN;q=0.8',
+        'Accept-Encoding': 'identity',
+        'Connection': 'close'
+      }, headers || {}),
+      timeout: timeoutMs
+    }, (res) => {
+      let body = '';
+      res.setEncoding('binary');
+      res.on('data', (c) => { body += c; });
+      res.on('end', () => {
+        resolve({ status: res.statusCode || 0, html: body, location: String(res.headers.location || '').trim() });
+      });
+    });
+    req.on('timeout', () => { req.destroy(new Error('timeout')); });
+    req.on('error', (e) => reject(e));
+    req.end();
+  });
+}
+
 function tunnelGet(url, headers, timeoutMs = 30000) {
+  if (!USE_PROXY) return directGet(url, headers, timeoutMs);
   return new Promise((resolve, reject) => {
     let u;
     try { u = new URL(url); } catch (e) { return reject(new Error('bad url')); }

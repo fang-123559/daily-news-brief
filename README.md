@@ -55,7 +55,7 @@ cd daily-news-brief
 
 > "帮我生成今天的一份每日资讯简报"
 
-AI 会按 README 流程抓取 5 个板块数据、核验时效、多源合并、生成日报，展示审阅版后等待你确认，再发送邮件。
+AI 会按 README 流程抓取 5 个板块数据、核验时效、多源合并、生成日报，展示审阅版后等待你确认，再发送邮件。审阅版（含四维打分）只出现在对话与 Markdown 存档中，HTML 邮件不含打分。
 
 ### 方式二：接入自动化定时推送（推荐）
 
@@ -90,10 +90,17 @@ daily-news-brief/
 │   ├── fetch_cailian.ps1     # 财联社热门直抓
 │   ├── verify_news.js        # 时效性/真实性硬性核验
 │   └── send_email.ps1        # SMTP HTML 邮件发送（163 隐式 SSL）
+├── templates/               # 三版可切换的 HTML 邮件模板(编辑印刷体系)
+│   ├── build.mjs            # 模板生成器: node templates/build.mjs [数据模块] [前缀]
+│   ├── sample-data.mjs      # 样例数据(与 archives/2026-08-19.md 对齐)
+│   ├── data-2026-09-03.mjs  # 2026-09-03 真实抓取数据示例
+│   ├── README.md            # 三版设计说明(钴蓝规则单页/薄荷观察日志/炭红公告)
+│   └── v1-modern-cards.html / v2-editorial.html / v3-dark-terminal.html
 └── archives/
     ├── email_template.css    # 报纸风格 HTML 邮件模板
     ├── 2026-08-18.md         # 示例日报
-    └── 2026-08-19.md         # 示例日报
+    ├── 2026-08-19.md         # 示例日报
+    └── 2026-09-03.md         # 示例日报(下午版,含审阅版打分)
 ```
 
 ## 配置与运行
@@ -144,6 +151,8 @@ SMTP 头部为 ASCII-only，主题用 RFC 2047 编码，HTML 正文用 Base64 + 
 ## 核验脚本说明
 
 `verify_news.js` 是本次实现的重点：它不只是检查 URL 是否 200，还会从页面提取 `article:published_time` / `datePublished` / `pubdate` / `og:published_time` 等发布元数据，换算到北京时间确认在 24h 窗口内；中文站无时区日期默认按北京时间解析。直抓受限时用 Google News RSS 的 `pubDate` 交叉核验，并把来源替换为真实可访问 URL。
+
+抓取通道默认**直连**；受限网络需要代理时，设置环境变量 `PROXY_HOST`（可选 `PROXY_PORT`，默认 1080），脚本自动改走 CONNECT 隧道。
 
 ## 免责声明
 
