@@ -1,16 +1,16 @@
-// build.mjs —— 由 sample-data.mjs 生成三版自包含 HTML 邮件模板
-// 运行: node templates/build.mjs
-// 输出: templates/v1-modern-cards.html / v2-editorial.html / v3-dark-terminal.html
+// build.mjs —— 由数据模块生成三版自包含 HTML 邮件模板
+// 运行: node templates/build.mjs [数据模块] [输出文件名前缀]
+// 输出: templates/lanTu.html / zhuBi.html / kaiPan.html
 //
 // 设计体系(借鉴 yanliudesign/mono-color-skill 的编辑印刷语法):
 //   中性纸基材 + 最多两种油墨(各承担明确版角色) + 单一左缘对齐
 //   + 25%-55% 主动留白 + 一次 5-12x 的字号跳跃 + 恰好一个手工手势
 //   禁止: 卡片网格 / UI 面板 / 胶囊徽章 / 装饰色块 / 居中模板对称
 //
-// 三版配方:
-//   V1 钴蓝规则单页   基材 Neutral White #FAFAF7  墨: 钴蓝 #2148B8(结构) + 碳黑 #1F2328(正文)   手势: 规则数据带
-//   V2 薄荷观察日志   基材 Pale Beige   #F5F1E8  墨: 炭黑 #302D2E(正文) + 薄荷绿 #5EB783(批注) 手势: 圈注事实
-//   V3 炭红公告       基材 Cool Gray    #E9E9E5  墨: 炭黑 #30343A(主体) + 信号红 #C83232(批注) 手势: 出血红规
+// 三版配方(定名: 蓝图 / 主笔 / 开盘):
+//   V1 蓝图 · 钴蓝规则单页   基材 Neutral White #FAFAF7  墨: 钴蓝 #2148B8(结构) + 碳黑 #1F2328(正文)   手势: 规则数据带
+//   V2 主笔 · 薄荷观察日志   基材 Pale Beige   #F5F1E8  墨: 炭黑 #302D2E(正文) + 薄荷绿 #5EB783(批注) 手势: 圈注事实
+//   V3 开盘 · 炭红公告       基材 Cool Gray    #E9E9E5  墨: 炭黑 #30343A(主体) + 信号红 #C83232(批注) 手势: 出血红规
 //
 // 三版共同硬约束: HTML 内必须含 "NumberAlign" 与 "@font-face" 字符串(send_email.ps1 发送前校验)
 import fs from 'node:fs';
@@ -388,9 +388,9 @@ const banner = (v, name, note) => `<!--
 `;
 
 const files = [
-  ['v1-modern-cards.html', banner('V1 钴蓝规则单页', 'ruled information poster', '基材 Neutral White #FAFAF7 · 钴蓝 #2148B8(结构) + 碳黑(正文) · 焦点: 56px 报头 · 手势: 规则市场数据带'), renderV1()],
-  ['v2-editorial.html', banner('V2 薄荷观察日志', 'editorial journal', '基材 Pale Beige #F5F1E8 · 炭黑 + 薄荷绿 #5EB783(批注) · 焦点: 52px 衬线报头 · 手势: 圈注"均为优"'), renderV2()],
-  ['v3-dark-terminal.html', banner('V3 炭红公告', 'type-led declaration', '基材 Cool Gray #E9E9E5 · 炭黑 + 信号红 #C83232(批注) · 焦点: 84px 日期 · 手势: 出血红规'), renderV3()],
+  ['lanTu.html', banner('V1 蓝图 · 钴蓝规则单页', 'ruled information poster', '基材 Neutral White #FAFAF7 · 钴蓝 #2148B8(结构) + 碳黑(正文) · 焦点: 56px 报头 · 手势: 规则市场数据带'), renderV1()],
+  ['zhuBi.html', banner('V2 主笔 · 薄荷观察日志', 'editorial journal', '基材 Pale Beige #F5F1E8 · 炭黑 + 薄荷绿 #5EB783(批注) · 焦点: 52px 衬线报头 · 手势: 圈注"均为优"'), renderV2()],
+  ['kaiPan.html', banner('V3 开盘 · 炭红公告', 'type-led declaration', '基材 Cool Gray #E9E9E5 · 炭黑 + 信号红 #C83232(批注) · 焦点: 84px 日期 · 手势: 出血红规'), renderV3()],
 ];
 
 for (const [name, head, body] of files) {

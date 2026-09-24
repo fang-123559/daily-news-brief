@@ -90,12 +90,15 @@ daily-news-brief/
 │   ├── fetch_cailian.ps1     # 财联社热门直抓
 │   ├── verify_news.js        # 时效性/真实性硬性核验
 │   └── send_email.ps1        # SMTP HTML 邮件发送（163 隐式 SSL）
-├── templates/               # 三版可切换的 HTML 邮件模板(编辑印刷体系)
-│   ├── build.mjs            # 模板生成器: node templates/build.mjs [数据模块] [前缀]
+├── templates/               # 四版可切换的 HTML 邮件模板(编辑印刷体系)
+│   ├── build.mjs            # 蓝图/主笔/开盘生成器: node templates/build.mjs [数据模块] [前缀]
+│   ├── render-classic.mjs   # 大报(原版报纸风)渲染器: node templates/render-classic.mjs [数据模块] [输出]
 │   ├── sample-data.mjs      # 样例数据(与 archives/2026-08-19.md 对齐)
 │   ├── data-2026-09-03.mjs  # 2026-09-03 真实抓取数据示例
-│   ├── README.md            # 三版设计说明(钴蓝规则单页/薄荷观察日志/炭红公告)
-│   └── v1-modern-cards.html / v2-editorial.html / v3-dark-terminal.html
+│   ├── data-2026-09-22.mjs  # 2026-09-22 真实抓取数据示例
+│   ├── README.md            # 四版设计说明与定名(大报/蓝图/主笔/开盘)
+│   ├── lanTu.html / zhuBi.html / kaiPan.html            # 三版样例模板
+│   └── daily-2026-09-22-lanTu.html 等                    # 当日邮件成品
 └── archives/
     ├── email_template.css    # 报纸风格 HTML 邮件模板
     ├── 2026-08-18.md         # 示例日报
