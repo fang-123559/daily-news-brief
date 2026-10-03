@@ -1,0 +1,153 @@
+/* ============================================================
+   V4 观象台 —— 制图蓝墨 + 图纸
+   星等=评分 · 星环=源数 · 星区=版面;转动星盘对准目镜
+   ============================================================ */
+
+#v4{background:var(--v4-paper);}
+.v4-stage{position:absolute;inset:52px 0 0 0;overflow:hidden;}
+
+#v4-svg{
+  position:absolute;inset:0;width:100%;height:100%;display:block;
+  cursor:grab;touch-action:none;
+  transition:transform .5s cubic-bezier(.2,.7,.2,1);
+}
+#v4-svg.dragging{cursor:grabbing;}
+#v4-svg.log-open{transform:translateX(-170px);}
+
+/* --- SVG 元素 --- */
+.v4-tick{stroke:rgba(46,76,119,.55);stroke-width:1;}
+.v4-tick.major{stroke:rgba(46,76,119,.8);stroke-width:1.4;}
+.v4-bezel-circle{fill:none;stroke:rgba(46,76,119,.4);stroke-width:1;}
+
+.v4-wedge-line{stroke:rgba(46,76,119,.34);stroke-width:1;}
+.v4-wedge-fill{fill:rgba(46,76,119,.05);}
+.v4-const-line{fill:none;stroke:rgba(46,76,119,.5);stroke-width:1;pointer-events:none;}
+.v4-sec-label{font-family:var(--kai);font-size:22px;fill:var(--v4-ink);letter-spacing:6px;}
+
+.v4-star{fill:var(--v4-ink);cursor:pointer;}
+.v4-ring{fill:none;stroke:rgba(46,76,119,.55);stroke-width:1;pointer-events:none;}
+.v4-ring.single{stroke-dasharray:2 3;}
+.v4-hit{fill:transparent;pointer-events:all;cursor:pointer;}
+.v4-star-sel{stroke:var(--ink);stroke-width:1.6;}
+
+/* 暗适应:非当前星区淡墨 */
+g.v4-g-sec{transition:opacity .45s ease;}
+g.v4-g-sec.dim{opacity:.24;}
+#v4-svg.log-open g.v4-g-sec.dim{opacity:.12;}
+
+/* 只看今晨:昨日来源的星退为虚点 */
+g.v4-star-g{transition:opacity .4s ease;}
+g.v4-star-g.v4-ghost{opacity:.13;}
+#v4-hub.today .v4-hub-circle{stroke:rgba(46,76,119,.95);stroke-width:1.8;}
+#v4-hub{transition:opacity .2s;}
+#v4-hub:hover .v4-hub-circle{stroke-width:1.6;}
+
+.v4-index{fill:var(--ink);}
+.v4-index-line{stroke:var(--ink);stroke-width:1;}
+
+.v4-hub-circle{fill:var(--v4-paper);stroke:rgba(46,76,119,.5);stroke-width:1;}
+.v4-hub-text{font-family:var(--kai);fill:var(--v4-ink);}
+.v4-hub-date{font-size:17px;letter-spacing:2px;}
+.v4-hub-push{font-family:var(--sans);font-size:10px;letter-spacing:1.5px;fill:rgba(46,76,119,.75);}
+.v4-hub-arc{fill:none;stroke-width:9;}
+.v4-hub-legend{font-family:var(--sans);font-size:9.5px;fill:rgba(46,76,119,.85);letter-spacing:.5px;}
+
+/* --- 目镜注记(左上) --- */
+.v4-notes{
+  position:absolute;top:22px;left:30px;width:308px;z-index:6;
+  pointer-events:none;
+}
+.v4-notes .nt-kicker{
+  font-size:10px;letter-spacing:.4em;color:rgba(46,76,119,.8);
+  padding-bottom:8px;border-bottom:1px solid rgba(46,76,119,.4);
+}
+.v4-notes .nt-name{
+  font-family:var(--kai);font-size:30px;color:var(--v4-ink);
+  margin:12px 0 4px;letter-spacing:4px;
+}
+.v4-notes .nt-count{font-family:var(--sans);font-size:10.5px;letter-spacing:.2em;color:rgba(46,76,119,.7);}
+.v4-notes ol{list-style:none;margin-top:10px;}
+.v4-notes li{
+  pointer-events:auto;cursor:pointer;
+  display:flex;gap:10px;align-items:baseline;
+  padding:6.5px 2px;border-bottom:1px solid rgba(46,76,119,.16);
+  transition:background .15s;
+}
+.v4-notes li:hover{background:rgba(46,76,119,.07);}
+.v4-notes li .sc{font-size:12.5px;color:var(--v4-ink);min-width:30px;font-weight:700;}
+.v4-notes li .tt{font-size:12.5px;color:var(--ink-70);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.v4-notes li.cur{background:rgba(46,76,119,.1);}
+.v4-notes .nt-legend{
+  margin-top:14px;font-family:var(--kai);font-size:11.5px;
+  color:rgba(46,76,119,.65);letter-spacing:1px;line-height:1.8;
+}
+
+/* --- 观测记录簿(右侧滑出) --- */
+.v4-log{
+  position:absolute;top:0;right:0;bottom:46px;width:408px;z-index:8;
+  background:var(--paper-lift);border-left:1px solid rgba(46,76,119,.45);
+  transform:translateX(103%);transition:transform .42s cubic-bezier(.2,.7,.2,1);
+  padding:30px 32px 40px;overflow-y:auto;
+}
+#v4.log-show .v4-log{transform:translateX(0);}
+.v4-log .lg-close{
+  position:absolute;top:14px;right:16px;font-size:15px;color:var(--ink-50);
+  width:30px;height:30px;line-height:30px;text-align:center;border-radius:50%;
+}
+.v4-log .lg-close:hover{color:var(--ink);background:rgba(46,76,119,.1);}
+.v4-log .lg-tag{
+  font-size:10px;letter-spacing:.34em;color:rgba(46,76,119,.85);
+  padding-bottom:10px;border-bottom:1px solid rgba(46,76,119,.35);display:block;
+}
+.v4-log .lg-title{font-family:var(--serif);font-size:19px;font-weight:700;line-height:1.7;margin:18px 0 12px;}
+.v4-log .lg-sum{font-size:13px;line-height:2.0;color:var(--ink-70);}
+.v4-log .lg-impact{font-size:12.5px;line-height:1.95;color:var(--ink-70);margin-top:12px;}
+.v4-log .lg-impact b{color:rgba(46,76,119,.95);font-weight:700;margin-right:8px;font-size:10.5px;letter-spacing:.2em;}
+.v4-log .lg-dims{margin-top:20px;border-top:1px solid rgba(46,76,119,.3);padding-top:14px;}
+.v4-log .lg-dims .dim-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.v4-log .lg-dims .dim-name{font-size:11px;letter-spacing:.18em;color:var(--ink-70);width:52px;}
+.v4-log .lg-dims .ticks{display:flex;gap:3px;align-items:center;}
+.v4-log .lg-dims .ticks i{width:5px;height:11px;background:rgba(46,76,119,.22);}
+.v4-log .lg-dims .ticks i.f{background:var(--v4-ink);}
+.v4-log .lg-dims .ticks .val{font-size:13px;color:var(--v4-ink);font-weight:700;margin-left:7px;}
+.v4-log .lg-meta{
+  margin-top:16px;font-size:11px;letter-spacing:.06em;color:var(--ink-50);line-height:2;
+}
+.v4-log .lg-sources{margin-top:14px;border-top:1px dashed rgba(46,76,119,.35);padding-top:12px;}
+.v4-log .lg-sources a{
+  display:inline-block;font-size:11.5px;color:var(--v4-ink);margin:0 14px 8px 0;
+  border-bottom:1px solid rgba(46,76,119,.5);padding-bottom:1px;
+}
+.v4-log .lg-sources a span.dt{color:var(--ink-30);margin-left:5px;font-size:10.5px;}
+.v4-log .lg-foot{margin-top:18px;font-family:var(--kai);font-size:11px;color:var(--ink-30);letter-spacing:1px;}
+
+/* --- 悬停提示 --- */
+.v4-tip{
+  position:fixed;z-index:20;pointer-events:none;max-width:280px;
+  background:var(--paper-lift);border:1px solid rgba(46,76,119,.55);
+  padding:7px 11px;font-size:12px;line-height:1.6;color:var(--ink);
+  box-shadow:3px 3px 0 rgba(46,76,119,.12);
+}
+.v4-tip .tp-sc{color:var(--v4-ink);font-weight:700;margin-right:8px;}
+
+/* --- 天象注记条 --- */
+.v4-strip{
+  position:absolute;left:0;right:0;bottom:0;z-index:7;
+  border-top:1px solid rgba(46,76,119,.4);
+  background:var(--v4-paper);
+  padding:9px 30px;display:flex;gap:26px;align-items:baseline;flex-wrap:wrap;
+  font-family:var(--kai);font-size:12.5px;color:var(--ink-70);letter-spacing:.5px;
+  max-height:64px;overflow:hidden;
+}
+.v4-strip .st-label{
+  font-family:var(--sans);font-size:9.5px;letter-spacing:.32em;color:rgba(46,76,119,.8);
+}
+.v4-strip .st-item .num{color:var(--ink);}
+.v4-strip .st-item .chg{color:var(--v4-ink);font-weight:700;}
+.v4-strip .st-sep{color:rgba(46,76,119,.4);}
+
+@media (max-width:1100px){
+  .v4-notes{width:250px;left:18px;}
+  .v4-log{width:min(360px,88vw);}
+  #v4-svg.log-open{transform:none;}
+}

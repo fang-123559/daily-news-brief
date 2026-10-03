@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>每日资讯简报 · 三种读法 — 增补 V4–V6</title>
+<link rel="stylesheet" href="css/shell.css">
+<link rel="stylesheet" href="css/v4-observatory.css">
+<link rel="stylesheet" href="css/v5-typeshop.css">
+<link rel="stylesheet" href="css/v6-handscroll.css">
+</head>
+<body class="mode-choose">
+
+  <!-- 读法选择 -->
+  <section id="choose" class="view">
+    <div class="choose-inner">
+      <div class="choose-kicker">小柒新闻 · DAILY NEWS BRIEF · 增补三版</div>
+      <h1 class="choose-date"><span id="choose-date-text"></span></h1>
+      <p class="choose-pre" id="choose-pre"></p>
+
+      <div class="choose-list" id="choose-list" role="list"></div>
+
+      <div class="choose-foot">
+        <span class="foot-label">今日读哪天的报</span>
+        <span id="choose-datasets" class="foot-datasets"></span>
+      </div>
+      <p class="choose-credit">数据与字段对齐 daily-news-brief / templates / sample-data.mjs · 与 V1–V3 邮件模板并存</p>
+    </div>
+  </section>
+
+  <!-- V4 观象台 -->
+  <section id="v4" class="view" hidden>
+    <div class="v4-stage">
+      <svg id="v4-svg" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet" aria-label="观象台星盘"></svg>
+      <aside id="v4-notes" class="v4-notes" aria-label="目镜注记"></aside>
+      <aside id="v4-log" class="v4-log" aria-label="观测记录簿"></aside>
+      <div id="v4-tip" class="v4-tip" hidden></div>
+      <footer id="v4-strip" class="v4-strip" aria-label="天象与行情注记"></footer>
+    </div>
+  </section>
+
+  <!-- V5 排字车间 -->
+  <section id="v5" class="view" hidden>
+    <div class="v5-room">
+      <div class="v5-frame-wrap">
+        <div class="v5-frame-col">
+          <div class="v5-frame-head">
+            <span class="fh-cn">版模</span><span class="fh-en">FORME · 一页八槽</span>
+            <button id="v5-ai-plan" class="fh-btn" title="AI 按星等自动排出参考头版">让 AI 先排一版</button>
+          </div>
+          <div id="v5-frame" class="v5-frame"></div>
+        </div>
+        <div class="v5-lever-col">
+          <div id="v5-counter" class="v5-counter"></div>
+          <button id="v5-lever" class="v5-lever" aria-label="压印">
+            <svg viewBox="0 0 84 300" width="84" height="300" aria-hidden="true">
+              <g id="v5-lever-arm">
+                <rect x="37" y="10" width="10" height="240" rx="4" class="lv-arm"/>
+                <rect x="24" y="0" width="36" height="26" rx="10" class="lv-handle"/>
+              </g>
+              <circle cx="42" cy="262" r="15" class="lv-pivot"/>
+              <path d="M12 292 h60" class="lv-base"/>
+            </svg>
+          </button>
+          <div id="v5-lever-hint" class="v5-lever-hint"></div>
+        </div>
+      </div>
+      <div id="v5-trays" class="v5-trays" aria-label="字盘"></div>
+    </div>
+    <div id="v5-sheet-layer" class="v5-sheet-layer" hidden></div>
+    <div id="v5-ghost" class="v5-ghost" hidden></div>
+  </section>
+
+  <!-- V6 手卷 -->
+  <section id="v6" class="view" hidden>
+    <div id="v6-scroller" class="v6-scroller"><div id="v6-track" class="v6-track"></div></div>
+    <div class="v6-roller v6-roller-l" aria-hidden="true"></div>
+    <div class="v6-roller v6-roller-r" aria-hidden="true"><span id="v6-seal-count" class="v6-seal-count"></span></div>
+    <div class="v6-progress" aria-hidden="true"><i id="v6-progress-bar"></i></div>
+  </section>
+
+  <!-- 顶部切换轨 -->
+  <header id="rail" class="rail" hidden>
+    <button id="rail-back" class="rail-btn">← 三种读法</button>
+    <nav class="rail-modes" aria-label="模板切换">
+      <button data-mode="v4"><i class="dot dot-v4"></i>观象台</button>
+      <button data-mode="v5"><i class="dot dot-v5"></i>排字车间</button>
+      <button data-mode="v6"><i class="dot dot-v6"></i>手卷</button>
+    </nav>
+    <div id="rail-datasets" class="rail-datasets" aria-label="数据集切换"></div>
+  </header>
+
+  <div id="wipe" class="wipe" aria-hidden="true"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/v4-observatory.js"></script>
+  <script src="js/v5-typeshop.js"></script>
+  <script src="js/v6-handscroll.js"></script>
+</body>
+</html>

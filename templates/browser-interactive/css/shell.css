@@ -1,0 +1,168 @@
+/* ============================================================
+   shell.css —— 外壳「三种读法」与切换轨
+   ============================================================ */
+
+:root{
+  --paper:#F2EFE8;
+  --paper-lift:#F7F4ED;
+  --ink:#26241F;
+  --ink-70:rgba(38,36,31,.72);
+  --ink-50:rgba(38,36,31,.52);
+  --ink-30:rgba(38,36,31,.32);
+  --hairline:rgba(38,36,31,.22);
+  --hairline-soft:rgba(38,36,31,.13);
+
+  /* 各模板专属变量 */
+  --v4-ink:#2E4C77;          /* 制图蓝 */
+  --v4-paper:#F1EEE3;
+  --v5-wood:#5E4A38;
+  --v5-wood-lift:#7A5F47;
+  --v5-table:#E9E2D2;
+  --v5-paper:#FBF9F2;
+  --v5-red:#B03A2E;          /* 全站唯一红:压杆把手(钤印朱砂属 V6) */
+  --v6-ink:#2B2823;
+  --v6-cinnabar:#A5402D;
+  --v6-paper:#F7F4EC;
+  --v6-rule:#D8D2C2;
+
+  --serif:"Songti SC","STSong","STZhongsong","SimSun","Noto Serif CJK SC","Source Han Serif SC",serif;
+  --sans:"PingFang SC","Microsoft YaHei","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --kai:"Kaiti SC","STKaiti","KaiTi","DFKai-SB",serif;
+}
+
+/* NumberAlign —— 数字一律衬线,延续项目的数字观(send_email.ps1 同名校验项的浏览器对应物) */
+@font-face{
+  font-family:'NumberAlign';
+  src:local('Times New Roman'),local('Times'),local('Songti SC');
+  unicode-range:U+0030-0039,U+002E,U+0025,U+002B,U+002D,U+00B0,U+007E,U+2212;
+}
+.num{font-family:'NumberAlign',Georgia,'Times New Roman',serif;}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;
+  overflow:hidden;
+}
+body.mode-choose{overflow:auto;}
+a{color:inherit;}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;}
+[hidden]{display:none !important;}
+
+.view{position:fixed;inset:0;}
+
+/* ---------- 翻纸过渡:全站唯一转场语言 ---------- */
+.wipe{
+  position:fixed;inset:0;z-index:90;pointer-events:none;
+  background:var(--paper);
+  transform:translateX(-102%);
+  box-shadow:inset -1px 0 0 var(--hairline);
+}
+.wipe.run{transition:transform .42s cubic-bezier(.72,0,.28,1);}
+.wipe.cover{transform:translateX(0);}
+.wipe.exit{transform:translateX(102%);}
+
+/* ---------- 选择页 ---------- */
+.choose-inner{max-width:1080px;margin:0 auto;padding:10vh 48px 9vh;min-height:100%;display:flex;flex-direction:column;}
+.choose-kicker{font-size:11px;letter-spacing:.42em;color:var(--ink-50);}
+.choose-date{
+  margin-top:30px;
+  font-family:var(--serif);font-weight:700;font-size:clamp(40px,5.6vw,68px);
+  line-height:1.18;letter-spacing:.02em;
+}
+.choose-pre{
+  margin-top:20px;max-width:36em;
+  font-family:var(--kai);font-size:15.5px;line-height:2;color:var(--ink-70);
+}
+.choose-list{margin-top:6.5vh;}
+.choose-row{
+  display:grid;grid-template-columns:96px 1fr minmax(0,34em);align-items:center;gap:24px;
+  width:100%;text-align:left;padding:34px 8px 30px;
+  border-top:1px solid var(--hairline-soft);
+}
+.choose-row:last-of-type{border-bottom:1px solid var(--hairline-soft);}
+.choose-glyph{font-size:11.5px;letter-spacing:.5em;color:var(--ink-50);}
+.choose-glyph b{display:block;font-size:17px;letter-spacing:.1em;color:var(--ink);margin-bottom:6px;font-weight:400;}
+.choose-name{
+  font-size:clamp(30px,3.4vw,44px);font-weight:700;line-height:1.25;
+  transition:transform .3s cubic-bezier(.2,.7,.2,1);
+}
+.choose-intro{
+  font-family:var(--kai);font-size:14.5px;line-height:1.95;color:var(--ink-70);
+  opacity:0;transform:translateX(10px);
+  transition:opacity .3s ease,transform .3s ease;
+}
+.choose-row:hover .choose-name,.choose-row:focus-visible .choose-name{transform:translateX(12px);}
+.choose-row:hover .choose-intro,.choose-row:focus-visible .choose-intro{opacity:1;transform:none;}
+.m-v4 .choose-name{font-family:var(--sans);color:var(--v4-ink);letter-spacing:.06em;}
+.m-v5 .choose-name{font-family:var(--serif);color:var(--v5-wood);}
+.m-v6 .choose-name{font-family:var(--kai);font-weight:400;color:var(--v6-ink);}
+
+.choose-foot{
+  margin-top:auto;padding-top:7vh;
+  display:flex;align-items:baseline;gap:22px;flex-wrap:wrap;
+}
+.foot-label{font-size:11px;letter-spacing:.3em;color:var(--ink-50);}
+.foot-datasets{display:flex;gap:18px;}
+.ds-btn{
+  font-size:14px;color:var(--ink-50);padding:2px 1px;
+  border-bottom:1px solid transparent;transition:.2s;
+}
+.ds-btn .num{font-size:15px;}
+.ds-btn:hover{color:var(--ink);}
+.ds-btn.on{color:var(--ink);border-bottom-color:var(--ink);}
+.choose-credit{margin-top:16px;font-size:10.5px;letter-spacing:.08em;color:var(--ink-30);}
+
+/* ---------- 顶部切换轨 ---------- */
+.rail{
+  position:fixed;top:0;left:0;right:0;height:52px;z-index:60;
+  display:flex;align-items:center;gap:26px;padding:0 22px;
+  background:var(--paper);border-bottom:1px solid var(--hairline-soft);
+}
+.rail-btn{font-size:12px;letter-spacing:.14em;color:var(--ink-70);padding:6px 2px;}
+.rail-btn:hover{color:var(--ink);}
+.rail-modes{display:flex;gap:4px;margin-left:6px;}
+.rail-modes button{
+  display:flex;align-items:center;gap:8px;
+  font-size:12.5px;letter-spacing:.18em;color:var(--ink-50);
+  padding:8px 14px;border-radius:2px;transition:.2s;
+}
+.rail-modes button:hover{color:var(--ink);}
+.rail-modes button.on{color:var(--ink);}
+.rail-modes button.on span,.rail-modes button span{position:relative;}
+.rail-modes button.on span::after{
+  content:'';position:absolute;left:0;right:0;bottom:-5px;height:1px;background:var(--ink);
+}
+.dot{width:7px;height:7px;border-radius:50%;display:inline-block;}
+.dot-v4{background:var(--v4-ink);}
+.dot-v5{background:var(--v5-wood);}
+.dot-v6{background:var(--v6-cinnabar);}
+.rail-datasets{margin-left:auto;display:flex;gap:14px;}
+.rail-datasets .ds-btn{font-size:12px;}
+.rail-hintkey{font-size:10px;letter-spacing:.2em;color:var(--ink-30);}
+
+/* ---------- 通用微件 ---------- */
+.pap-btn{
+  font-size:12.5px;letter-spacing:.12em;color:var(--ink);
+  border:1px solid var(--hairline);padding:9px 18px;border-radius:2px;background:var(--paper-lift);
+  transition:.18s;
+}
+.pap-btn:hover{border-color:var(--ink);}
+.pap-btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+.pap-btn.primary:hover{background:#000;}
+.pap-btn:disabled{opacity:.4;cursor:not-allowed;}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition-duration:.01ms !important;animation-duration:.01ms !important;}
+}
+
+@media (max-width:860px){
+  .choose-inner{padding:8vh 26px 7vh;}
+  .choose-row{grid-template-columns:64px 1fr;gap:14px;}
+  .choose-intro{grid-column:2;opacity:1;transform:none;}
+  .rail{gap:10px;padding:0 12px;}
+  .rail-modes button{padding:8px 8px;letter-spacing:.08em;}
+}

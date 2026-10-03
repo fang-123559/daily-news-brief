@@ -71,7 +71,8 @@ templates/
 ├── render-classic.mjs        # V0 大报渲染器(读取 email_template.css)
 ├── lanTu.html                # V1 蓝图(样例)
 ├── zhuBi.html                # V2 主笔(样例)
-└── kaiPan.html               # V3 开盘(样例)
+├── kaiPan.html               # V3 开盘(样例)
+├── browser-interactive/      # V4–V6 浏览器交互三版(见下节及其内 README)
 archives/2026-09-22.html      # V0 大报当日邮件
 previews/                     # 各版桌面(900px)/ 移动(390px)渲染截图
 ```
@@ -81,3 +82,17 @@ previews/                     # 各版桌面(900px)/ 移动(390px)渲染截图
 - **直接发送**:`powershell -File scripts/send_email.ps1 -SubjectFile <主题文件> -HtmlFile <邮件文件> -DateStr 2026-09-22`(四选一:大报 `archives/2026-09-22.html`、蓝图 `templates/daily-2026-09-22-lanTu.html`、主笔 `templates/daily-2026-09-22-zhuBi.html`、开盘 `templates/daily-2026-09-22-kaiPan.html`)
 - **作为格式参照**:生成每日邮件的 AI 以任一版为版式基准,替换为当日数据。
 - **重新生成/改版**:蓝图/主笔/开盘用 `node templates/build.mjs <数据模块> <输出前缀>`(三版共用同一数据模块);大报用 `node templates/render-classic.mjs <数据模块> <输出路径>`。改数据只动数据文件,改配色/字号只动对应 render 内的常量。
+
+## 浏览器交互三版(V4–V6) —— `browser-interactive/`
+
+与上面四版邮件模板**并存**的另一条支线:四版负责"寄出去",这三版负责"在浏览器里读"。依赖 JS/SVG,不进邮件链路,零依赖、零网络请求,双击 `browser-interactive/index.html` 即可运行(也可 `node templates/browser-interactive/serve.cjs` 后开本地端口)。
+
+| 版 | 定名 | 内涵出处 | 手势 | 适合 |
+|----|------|----------|------|------|
+| V4 | **观象台** | "观象授时":观的是星象,授的是每日 08:30 推送时刻 | 拖转星盘对准目镜;点星读观测记录簿;点盘心环带「只看今晨」 | 扫描式读者 |
+| V5 | **排字车间** | 铅字排字工:AI 备料,最后一道工序归读者 | 点选/拖拽拾字入版(1 头版/3 要闻/4 简讯),拉杆压印出可打印的真实排版成品页;可先「让 AI 先排一版」,压印后给出均值与重合度判词 | 取舍式读者 |
+| V6 | **手卷** | 书画装裱形制(与立轴、册页相对):一日之事装裱成卷 | 横向展卷;条目钤印;卷尾题跋按真实阅读行为(用时/钤印/集中版面)自动生成 | 沉浸式读者 |
+
+- **数据保真**:`js/data.js` 由 `browser-interactive/sources/gen-data.mjs` 从本目录 `sample-data.mjs` 与 `data-2026-09-03.mjs` 原样转写,字段与 `build.mjs` 完全一致;若要转回邮件安全版(星图→规则数据表、排字→选编清单、手卷→单列卷式),数据无需改动。
+- **键盘**:选择页与模板内 `1/2/3` 互切,`Esc` 回「三种读法」选择页;右上角可切换 2026-08-19 / 2026-09-03 两套真实数据集。
+- **设计约定**:三版共用"纸"的物质假设(图纸蓝墨 / 木盘铅字 / 宣纸朱砂),颜色与密度全部来自真实字段(score / srcCount / 来源日期 / 版面),无深色模式、无装饰渐变;数字经 `NumberAlign` 衬线化,延续本库的数字观。
